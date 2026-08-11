@@ -1,0 +1,70 @@
+<section class="card">
+  <div class="card-head">
+    <h2>Gestión de asistentes</h2>
+    <span class="hint">Añade, edita o quita personas del grupo</span>
+  </div>
+  <form class="add-inline" (ngSubmit)="crearPersona()">
+    <input [(ngModel)]="nuevaPersona" name="nuevaPersona" placeholder="Nueva persona" />
+    <button type="submit" class="btn small">Añadir</button>
+  </form>
+</section>
+
+<section class="card asistencia-card">
+  <div class="card-head">
+    <h2>Asistencia por día</h2>
+    <span class="hint">Marca quién va cada día</span>
+  </div>
+
+  <div class="table-scroll" *ngIf="data().dias.length; else sinDiasAsist">
+    <table class="tabla-asistencia">
+      <thead>
+        <tr>
+          <th class="col-persona">Persona</th>
+          <th *ngFor="let dia of data().dias">
+            {{ dia.nombre }}
+            <span class="sub">{{ dia.fecha | date: 'd MMM' }}</span>
+          </th>
+          <th>Días</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let p of data().personas">
+          <td class="col-persona">
+            <span class="persona-edit" *ngIf="personaEnEdicion() === p; else verNombre">
+              <input class="mini-input" [(ngModel)]="nombreEdicion" name="nombreEdicion" />
+              <button class="icon-btn ok" (click)="guardarEdicion(p)" aria-label="Guardar nombre">✓</button>
+              <button class="icon-btn" (click)="cancelarEdicion()" aria-label="Cancelar edición">✕</button>
+            </span>
+            <ng-template #verNombre>
+              <span class="persona-row">
+                <span class="persona-nombre">{{ p }}</span>
+                <span class="persona-actions">
+                  <button class="icon-btn" (click)="empezarEdicion(p)" aria-label="Editar nombre">✎</button>
+                  <button class="icon-btn" (click)="eliminarPersona(p)" aria-label="Quitar persona">✕</button>
+                </span>
+              </span>
+            </ng-template>
+          </td>
+          <td class="check-cell" *ngFor="let dia of data().dias">
+            <input
+              type="checkbox"
+              [checked]="dia.asistentes.includes(p)"
+              (change)="fiesta.toggleAsistencia(dia.id, p)"
+            />
+          </td>
+          <td class="mono destacado">{{ fiesta.diasAsistidosPersona(p) }}</td>
+        </tr>
+        <tr *ngIf="!data().personas.length">
+          <td [attr.colspan]="data().dias.length + 2" class="empty-hint">
+            Todavía no hay nadie en el grupo. Añádelo arriba.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <ng-template #sinDiasAsist>
+    <p class="empty-hint">
+      Añade al menos un día de fiesta (en "Días de fiesta") para poder marcar asistencia.
+    </p>
+  </ng-template>
+</section>
