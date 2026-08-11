@@ -1,0 +1,96 @@
+<section class="resumen-consumo" *ngIf="data().bebidas.length && data().dias.length; else sinDatos">
+  <div class="card-head">
+    <h2>Resumen de consumo por día</h2>
+  </div>
+  <div class="table-scroll">
+    <table class="tabla-resumen">
+      <thead>
+        <tr>
+          <th class="col-bebida">Bebida</th>
+          <th *ngFor="let dia of data().dias">
+            {{ dia.nombre }}
+            <span class="sub">{{ dia.fecha | date: 'd MMM' }}</span>
+          </th>
+          <th>Total ud.</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let b of data().bebidas">
+          <td class="col-bebida">{{ b.nombre }}</td>
+          <td class="mono" *ngFor="let dia of data().dias">
+            {{ fiesta.cantidadConsumo(dia, b.id) }}
+          </td>
+          <td class="mono destacado">{{ fiesta.totalUnidadesBebida(b.id) }}</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td class="col-bebida">Importe del día</td>
+          <td class="mono" *ngFor="let dia of data().dias">
+            {{ fiesta.costeBebidasDia(dia) | number: '1.2-2' }} €
+          </td>
+          <td class="mono destacado">{{ fiesta.totalBebidasGeneral() | number: '1.2-2' }} €</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</section>
+
+<ng-template #sinDatos>
+  <p class="empty-hint big">Añade bebidas al menú y al menos un día para ver el resumen de consumo.</p>
+</ng-template>
+
+<section class="card gastos-resumen" *ngIf="data().gastosComunes.length">
+  <div class="card-head">
+    <h2>Gastos comunes</h2>
+    <span class="hint">Repartidos igual entre quien fue al menos un día</span>
+  </div>
+  <div class="stat">
+    <span>Total gastos comunes</span>
+    <strong class="mono">{{ fiesta.totalGastosComunes() | number: '1.2-2' }} €</strong>
+  </div>
+  <div class="stat">
+    <span>Asistentes entre los que se reparte</span>
+    <strong class="mono">{{ fiesta.asistentesUnicos().length }}</strong>
+  </div>
+  <div class="stat highlight">
+    <span>Coste por persona</span>
+    <strong class="mono">{{ fiesta.gastoComunPorPersona() | number: '1.2-2' }} €</strong>
+  </div>
+</section>
+
+<section class="totales">
+  <div class="card-head">
+    <h2>Total a pagar por persona</h2>
+    <strong class="mono total-general">Total fiesta: {{ fiesta.totalGeneral() | number: '1.2-2' }} €</strong>
+  </div>
+  <div class="table-scroll">
+    <table class="tabla-totales" *ngIf="resumen().length; else sinPersonas2">
+      <thead>
+        <tr>
+          <th>Persona</th>
+          <th>Días asistidos</th>
+          <th>Bebidas</th>
+          <th>Gastos comunes</th>
+          <th>Total a pagar</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let r of resumen()">
+          <td>{{ r.nombre }}</td>
+          <td class="mono">{{ r.diasAsistidos }}</td>
+          <td class="mono">{{ r.costeBebidas | number: '1.2-2' }} €</td>
+          <td class="mono">{{ r.costeComun | number: '1.2-2' }} €</td>
+          <td class="mono destacado">{{ r.totalAPagar | number: '1.2-2' }} €</td>
+          <td>
+            <button class="icon-btn" (click)="eliminarPersona(r.nombre)" aria-label="Quitar persona">✕</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <ng-template #sinPersonas2>
+    <p class="empty-hint">Añade personas al grupo para ver el reparto de gastos.</p>
+  </ng-template>
+</section>

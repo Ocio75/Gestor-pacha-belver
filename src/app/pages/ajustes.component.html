@@ -1,0 +1,44 @@
+<section class="card">
+  <div class="card-head">
+    <h2>Apariencia</h2>
+  </div>
+  <p class="hint block">
+    Por defecto la app usa el tema de tu sistema operativo o navegador. Puedes
+    forzar uno concreto:
+  </p>
+  <div class="theme-options">
+    <button
+      type="button"
+      class="theme-btn"
+      *ngFor="let op of opciones"
+      [class.active]="theme.preferencia() === op.valor"
+      (click)="elegirTema(op.valor)"
+    >
+      <span class="theme-icon">{{ op.icono }}</span>
+      {{ op.etiqueta }}
+    </button>
+  </div>
+  <p class="hint block">
+    Tema aplicado ahora mismo: <strong>{{ theme.temaEfectivo() === 'claro' ? 'Claro' : 'Oscuro' }}</strong>
+  </p>
+</section>
+
+<section class="card">
+  <div class="card-head">
+    <h2>Datos y privacidad</h2>
+  </div>
+  <p class="hint block">
+    Todo lo que registras (días, personas, bebidas y el tema elegido) se
+    guarda únicamente en el almacenamiento local de este navegador
+    (<span class="mono">localStorage</span>), en este dispositivo. No se envía
+    a ningún servidor ni se comparte con terceros.
+  </p>
+  <p class="hint block">
+    No usamos cookies de publicidad ni de seguimiento. El único dato técnico
+    guardado es el necesario para que la app funcione: la propia fiesta y tu
+    preferencia de tema.
+  </p>
+  <button type="button" class="btn ghost danger" (click)="borrarDatos()">
+    Borrar todos los datos de este navegador
+  </button>
+</section>
