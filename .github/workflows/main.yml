@@ -39,7 +39,7 @@ jobs:
       - name: Subir el resultado como artefacto de Pages
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist/fiesta-pueblo/browser
+          path: dist/Gestor-pacha-belver/browser
 
   deploy:
     needs: build
